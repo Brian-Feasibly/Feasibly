@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feasibly | AI-Powered Commercial Real Estate Analysis on Google Cloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: #f1f5f9;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        #scene-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        header {
+            padding: 30px 0;
+            position: relative;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #4285f4, #34a853);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-icon {
+            color: #4285f4;
+            font-size: 36px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #60a5fa;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4285f4, #34a853);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background: linear-gradient(90deg, #4285f4, #34a853);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(66, 133, 244, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0 150px;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h2 {
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #60a5fa, #34a853);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 22px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+            max-width: 700px;
+        }
+
+        .tagline {
+            display: inline-block;
+            background: rgba(66, 133, 244, 0.1);
+            padding: 12px 24px;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            border: 1px solid rgba(66, 133, 244, 0.3);
+        }
+
+        /* Google Cloud Integration */
+        .gcp-section {
+            padding: 100px 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            margin-bottom: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 80px;
+            background: linear-gradient(90deg, #4285f4, #ea4335);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .gcp-services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .gcp-service {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(66, 133, 244, 0.2);
+        }
+
+        .gcp-service:hover {
+            transform: translateY(-10px);
+            border-color: rgba(66, 133, 244, 0.5);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-icon {
+            font-size: 48px;
+            margin-bottom: 25px;
+        }
+
+        .vertex-ai { color: #4285f4; }
+        .bigquery { color: #34a853; }
+        .gke { color: #ea4335; }
+        .maps { color: #fbbc05; }
+        .security { color: #4285f4; }
+
+        .gcp-service h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #f8fafc;
+        }
+
+        .gcp-service p {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .integration-demo {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 60px;
+            border: 1px solid rgba(66, 133, 244, 0.3);
+        }
+
+        .demo-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #f8fafc;
+            text-align: center;
+        }
+
+        .demo-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .step {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            width: 220px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: scale(1.05);
+            border: 1px solid rgba(66, 133, 244, 0.5);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(90deg, #4285f4, #34a853);
+            border-radius: 50%;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .step h4 {
+            margin-bottom: 10px;
+            color: #f8fafc;
+        }
+
+        /* Company Info */
+        .company-info {
+            padding: 100px 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+            margin-top: 60px;
+        }
+
+        .info-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(66, 133, 244, 0.2);
+        }
+
+        .info-card h3 {
+            font-size: 28px;
+            margin-bottom: 25px;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-icon {
+            font-size: 32px;
+            color: #60a5fa;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(100, 116, 139, 0.3);
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            color: #34a853;
+        }
+
+        /* Contact */
+        .contact-section {
+            padding: 100px 0 150px;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #60a5fa, #34a853);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .contact-section p {
+            font-size: 20px;
+            color: #cbd5e1;
+            margin-bottom: 50px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-details {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(66, 133, 244, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #4285f4;
+        }
+
+        /* Footer */
+        footer {
+            padding: 50px 0;
+            text-align: center;
+            border-top: 1px solid rgba(100, 116, 139, 0.3);
+            color: #94a3b8;
+        }
+
+        .footer-logo {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #4285f4, #34a853);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 48px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .gcp-services {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .hero h2 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .section-title {
+                font-size: 32px;
+            }
+            
+            .demo-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Scene Container -->
+    <div id="scene-container"></div>
+
+    <!-- Navigation -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-chart-line logo-icon"></i>
+                    <h1>Feasibly</h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#gcp">Google Cloud Integration</a></li>
+                    <li><a href="#company">Our Solution</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <a href="https://planfeasibly.us" class="cta-button">Visit Our Platform</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="tagline">
+                    <i class="fas fa-bolt"></i> AI-Powered Commercial Real Estate Analysis
+                </div>
+                <h2>Fast, Accurate Feasibility Analysis Powered by Google Cloud</h2>
+                <p>Feasibly delivers fast, accurate market and financial feasibility analyses for commercial real estate projects in days instead of months. Powered by advanced AI and Google Cloud's cutting-edge technology.</p>
+                <a href="#gcp" class="cta-button">Explore Google Cloud Integration</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Google Cloud Integration -->
+    <section class="gcp-section" id="gcp">
+        <div class="container">
+            <h2 class="section-title">Deep Integration with Google Cloud Platform</h2>
+            
+            <div class="gcp-services">
+                <div class="gcp-service">
+                    <div class="service-icon vertex-ai">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Vertex AI</h3>
+                    <p>Custom ML models for demand forecasting, competitive analysis, and cash flow projection trained and deployed on Google's Vertex AI platform.</p>
+                </div>
+                
+                <div class="gcp-service">
+                    <div class="service-icon bigquery">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>BigQuery</h3>
+                    <p>Market, demographic, and transactional data are stored and processed in BigQuery, enabling high-speed analytics and real-time reporting.</p>
+                </div>
+                
+                <div class="gcp-service">
+                    <div class="service-icon gke">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3>Google Kubernetes Engine</h3>
+                    <p>Microservices architecture runs on GKE for reliability and elastic scaling, handling thousands of concurrent feasibility analyses.</p>
+                </div>
+                
+                <div class="gcp-service">
+                    <div class="service-icon maps">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3>Google Maps Platform</h3>
+                    <p>Geospatial insights for site selection, proximity analysis, and traffic pattern evaluation integrated directly into our analysis reports.</p>
+                </div>
+                
+                <div class="gcp-service">
+                    <div class="service-icon security">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Security & Compliance</h3>
+                    <p>Cloud IAM and Security Command Center ensure data protection and compliance with financial and real estate industry regulations.</p>
+                </div>
+            </div>
+            
+            <div class="integration-demo">
+                <h3 class="demo-title">How Feasibly Works with Google Cloud</h3>
+                <div class="demo-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h4>Data Ingestion</h4>
+                        <p>Market data feeds into BigQuery</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h4>AI Processing</h4>
+                        <p>Vertex AI models analyze trends</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h4>Geospatial Analysis</h4>
+                        <p>Google Maps adds location insights</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h4>Report Generation</h4>
+                        <p>Real-time reports delivered via GKE</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Info -->
+    <section class="company-info" id="company">
+        <div class="container">
+            <h2 class="section-title">Our AI-Powered Solution</h2>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3><i class="fas fa-rocket info-icon"></i> What We Do</h3>
+                    <ul>
+                        <li><i class="fas fa-check check-icon"></i> Fast feasibility analysis in days, not months</li>
+                        <li><i class="fas fa-check check-icon"></i> AI-driven market and financial analysis</li>
+                        <li><i class="fas fa-check check-icon"></i> Trusted data sources with expert validation</li>
+                        <li><i class="fas fa-check check-icon"></i> Reports on demand, competition, and cash flows</li>
+                        <li><i class="fas fa-check check-icon"></i> Support for internal planning and external funding</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-building info-icon"></i> Project Types</h3>
+                    <ul>
+                        <li><i class="fas fa-home"></i> Multifamily Residential</li>
+                        <li><i class="fas fa-shopping-cart"></i> Retail & Commercial</li>
+                        <li><i class="fas fa-hotel"></i> Hotels & Hospitality</li>
+                        <li><i class="fas fa-building"></i> Office Spaces</li>
+                        <li><i class="fas fa-baseball-ball"></i> Sports & Entertainment</li>
+                        <li><i class="fas fa-city"></i> Mixed-Use Developments</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-cogs info-icon"></i> Technology Stack</h3>
+                    <ul>
+                        <li><i class="fab fa-google"></i> Google Cloud Platform</li>
+                        <li><i class="fas fa-robot"></i> Advanced AI & Machine Learning</li>
+                        <li><i class="fas fa-chart-bar"></i> Real-time Analytics</li>
+                        <li><i class="fas fa-cloud"></i> Scalable Cloud Architecture</li>
+                        <li><i class="fas fa-mobile-alt"></i> Responsive Web Platform</li>
+                        <li><i class="fas fa-lock"></i> Enterprise-Grade Security</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <h2>Get Your Feasibility Analysis</h2>
+            <p>Contact us to learn how Feasibly can transform your commercial real estate project planning with AI-powered insights.</p>
+            
+            <div class="contact-details">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3>Website</h3>
+                    <p><a href="https://planfeasibly.us" style="color: #60a5fa; text-decoration: none;">planfeasibly.us</a></p>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email</h3>
+                    <p><a href="mailto:brian@planfeasibly.us" style="color: #60a5fa; text-decoration: none;">brian@planfeasibly.us</a></p>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Location</h3>
+                    <p>United States</p>
+                </div>
+            </div>
+            
+            <a href="mailto:brian@planfeasibly.us" class="cta-button">Contact Us Today</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-logo">Feasibly</div>
+            <p>AI-Powered Commercial Real Estate Feasibility Analysis on Google Cloud</p>
+            <p>© 2023 Feasibly. All rights reserved.</p>
+            <p style="margin-top: 20px; font-size: 14px;">Built with ❤️ using Three.js & Google Cloud Technologies</p>
+        </div>
+    </footer>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Three.js 3D Scene Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.getElementById('scene-container').appendChild(renderer.domElement);
+        
+        // Add floating geometric objects
+        const geometry = new THREE.IcosahedronGeometry(1, 0);
+        const material = new THREE.MeshPhongMaterial({ 
+            color: 0x4285f4, 
+            shininess: 100,
+            transparent: true,
+            opacity: 0.7
+        });
+        
+        const objects = [];
+        const colors = [0x4285f4, 0x34a853, 0xea4335, 0xfbbc05];
+        
+        // Create multiple floating objects
+        for (let i = 0; i < 20; i++) {
+            const object = new THREE.Mesh(geometry, material.clone());
+            object.material.color.setHex(colors[Math.floor(Math.random() * colors.length)]);
+            object.position.x = Math.random() * 40 - 20;
+            object.position.y = Math.random() * 40 - 20;
+            object.position.z = Math.random() * 40 - 20;
+            object.scale.setScalar(Math.random() * 0.5 + 0.3);
+            scene.add(object);
+            objects.push({
+                mesh: object,
+                speedX: Math.random() * 0.02 - 0.01,
+                speedY: Math.random() * 0.02 - 0.01,
+                speedZ: Math.random() * 0.02 - 0.01,
+                rotationSpeedX: Math.random() * 0.02 - 0.01,
+                rotationSpeedY: Math.random() * 0.02 - 0.01
+            });
+        }
+        
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(10, 20, 15);
+        scene.add(directionalLight);
+        
+        // Add a subtle background grid
+        const gridHelper = new THREE.GridHelper(60, 60, 0x4a5568, 0x2d3748);
+        gridHelper.position.y = -25;
+        scene.add(gridHelper);
+        
+        camera.position.z = 30;
+        camera.position.y = 10;
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Animate floating objects
+            objects.forEach(obj => {
+                obj.mesh.position.x += obj.speedX;
+                obj.mesh.position.y += obj.speedY;
+                obj.mesh.position.z += obj.speedZ;
+                
+                // Bounce off boundaries
+                if (obj.mesh.position.x > 20 || obj.mesh.position.x < -20) obj.speedX *= -1;
+                if (obj.mesh.position.y > 20 || obj.mesh.position.y < -20) obj.speedY *= -1;
+                if (obj.mesh.position.z > 20 || obj.mesh.position.z < -20) obj.speedZ *= -1;
+                
+                obj.mesh.rotation.x += obj.rotationSpeedX;
+                obj.mesh.rotation.y += obj.rotationSpeedY;
+            });
+            
+            // Slowly rotate camera
+            camera.position.x = Math.sin(Date.now() * 0.0001) * 30;
+            camera.position.z = Math.cos(Date.now() * 0.0001) * 30;
+            camera.lookAt(0, 0, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Start animation
+        animate();
+        
+        // Add interactive mouse effect
+        let mouseX = 0, mouseY = 0;
+        
+        window.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            // Slightly move camera based on mouse position
+            camera.position.x += (mouseX * 5 - camera.position.x) * 0.005;
+            camera.position.y += (mouseY * 5 - camera.position.y) * 0.005;
+        });
+    </script>
+</body>
+</html>
